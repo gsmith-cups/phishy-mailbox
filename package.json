@@ -105,5 +105,8 @@
     "typescript": "^6.0.3",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.8"
+  }, 
+  "resolutions": {
+    "html-encoding-sniffer": "2.0.1"
   }
 }
