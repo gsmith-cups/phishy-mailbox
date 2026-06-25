@@ -5,7 +5,6 @@ const nextConfig = {
   // `next start`, which is incompatible with standalone, so they opt out via this flag.
   // output: process.env.NEXT_DISABLE_STANDALONE === '1' ? undefined : 'standalone',
   // updated code:
-  reactStrictMode: true,
   output: process.env.NEXT_DISABLE_STANDALONE === '1' ? undefined : 'standalone',
   serverExternalPackages: ['isomorphic-dompurify'],
 };
