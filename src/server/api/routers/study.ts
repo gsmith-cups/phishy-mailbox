@@ -1,7 +1,8 @@
 import {createTRPCRouter, protectedProcedure} from '~/server/api/trpc';
 import {z} from 'zod';
 import {ParticipationEvents} from '~/server/api/routers/participationEvents';
-import DOMPurify from 'isomorphic-dompurify';
+// import DOMPurify from 'isomorphic-dompurify';
+import sanitizeHtml from 'sanitize-html';
 
 const studyShape = z.object({
   name: z.string(),
@@ -58,9 +59,9 @@ export const studyRouter = createTRPCRouter({
       return ctx.prisma.study.create({
         data: {
           ...data,
-          startText: DOMPurify.sanitize(data.startText),
-          endText: DOMPurify.sanitize(data.endText),
-          consentText: DOMPurify.sanitize(data.consentText ?? ''),
+          startText: sanitizeHtml(artText),
+          endText: sanitizeHtml(data.endText),
+          consentText: sanitizeHtml(data.consentText ?? ''),
           folder: {
             createMany: {
               data: folder.map((f, i) => ({name: f.name, order: i})),
@@ -148,9 +149,9 @@ export const studyRouter = createTRPCRouter({
           },
           data: {
             ...study,
-            startText: DOMPurify.sanitize(study.startText),
-            endText: DOMPurify.sanitize(study.endText),
-            consentText: DOMPurify.sanitize(study.consentText ?? ''),
+            startText: sanitizeHtml(study.startText),
+            endText: sanitizeHtml(study.endText),
+            consentText: sanitizeHtml(study.consentText ?? ''),
             folder: {
               deleteMany: {
                 id: {
