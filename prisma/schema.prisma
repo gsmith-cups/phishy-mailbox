@@ -32,6 +32,7 @@ model Participation {
   id                 String               @id @default(uuid()) @db.Uuid
   code               String               @unique(map: "code_idx")
   studyId            String               @db.Uuid
+  rid                String?
   study              Study                @relation(fields: [studyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "participation_study_id_study_id_fk")
   createdAt          DateTime             @db.Timestamptz(3)
   codeUsedAt         DateTime?            @db.Timestamptz(3)

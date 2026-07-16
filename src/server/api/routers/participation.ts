@@ -79,7 +79,8 @@ export const participationRouter = createTRPCRouter({
       },
     });
   }),
-  get: publicProcedure.input(z.string()).query(async ({ctx, input}) => {
+  // get: publicProcedure.input(z.string()).query(async ({ctx, input}) => {
+  get: publicProcedure.input(z.object({ code: z.string(), rid: z.string().optional() })).query(async ({ctx, input}) =>{
     const participation = await ctx.prisma.participation.findUnique({
       where: {
         code: input,
@@ -111,6 +112,7 @@ export const participationRouter = createTRPCRouter({
         },
         data: {
           codeUsedAt: new Date(),
+          rid: input.rid ?? null,
           emails: {
             createMany: {
               data: participation.study.email.map((email) => ({

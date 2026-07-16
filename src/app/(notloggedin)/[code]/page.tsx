@@ -32,6 +32,7 @@ import {
 import {useTranslation} from 'react-i18next';
 import {TimerMode} from '.prisma/client';
 import DOMPurify from 'isomorphic-dompurify';
+import {useSearchParams} from 'next/navigation';
 
 const NineDotsIcon = () => (
   <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'>
@@ -376,7 +377,10 @@ const ConsentOverlay: FC<{onClick: () => void; text: string | null}> = ({onClick
 export default function Run({params}: {params: Promise<{code: string}>}) {
   const {code} = use(params);
   const {t} = useTranslation(undefined, {keyPrefix: 'participants'});
-  const {data, refetch} = trpc.participation.get.useQuery(code);
+  // const {data, refetch} = trpc.participation.get.useQuery(code);
+  const searchParams = useSearchParams();
+  const rid = searchParams.get('rid') ?? undefined;
+  const {data, refetch} = trpc.participation.get.useQuery({ code, rid });
   const startMutation = trpc.participation.start.useMutation();
   const giveConsentMutation = trpc.participation.giveConsent.useMutation();
   const moveEmailMutation = trpc.participation.moveEmail.useMutation();
