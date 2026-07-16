@@ -379,7 +379,7 @@ export default function Run({params}: {params: Promise<{code: string}>}) {
   const {t} = useTranslation(undefined, {keyPrefix: 'participants'});
   // const {data, refetch} = trpc.participation.get.useQuery(code);
   const searchParams = useSearchParams();
-  const rid = searchParams.get('rid') ?? undefined;
+  const rid = searchParams?.get('rid') ?? undefined;
   const {data, refetch} = trpc.participation.get.useQuery({ code, rid });
   const startMutation = trpc.participation.start.useMutation();
   const giveConsentMutation = trpc.participation.giveConsent.useMutation();
