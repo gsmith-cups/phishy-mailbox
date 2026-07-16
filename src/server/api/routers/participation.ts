@@ -6,7 +6,7 @@ import {TRPCError} from '@trpc/server';
 import {TimerMode} from '.prisma/client';
 import {PrismaClient} from '@prisma/client';
 
-export async function createNewParticipation(prisma: PrismaClient, studyId: string) {
+export async function createNewParticipation(prisma: PrismaClient, studyId: string, rid?: string) {
   const totalCount = await prisma.participation.count();
   const codeLength = Math.max(2, Math.ceil(Math.log10((totalCount + 1) * 2)));
 
@@ -35,6 +35,7 @@ export async function createNewParticipation(prisma: PrismaClient, studyId: stri
       code,
       studyId,
       createdAt: new Date(),
+      rid: rid ?? null,
     },
   });
 }

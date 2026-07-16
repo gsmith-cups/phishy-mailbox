@@ -4,6 +4,9 @@ import {redirect} from 'next/navigation';
 
 export async function GET(_request: Request, {params}: {params: Promise<{studyId: string}>}) {
   const {studyId} = await params;
+  const url = new URL(_request.url);
+  const rid = url.searchParams.get('rid') ?? undefined;
+
   const study = await prisma.study.findUnique({
     where: {
       id: studyId,
@@ -18,7 +21,7 @@ export async function GET(_request: Request, {params}: {params: Promise<{studyId
     redirect('/');
   }
 
-  const {code} = await createNewParticipation(prisma, study.id);
+  const {code} = await createNewParticipation(prisma, study.id, rid);
 
   redirect('/' + code);
 }
