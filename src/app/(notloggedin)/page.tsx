@@ -16,8 +16,7 @@ export default function StartStudy() {
   const builder = useFormBuilder<CodeForm>();
   const router = useRouter();
   const [code, setCode] = useState<string | null>(null);
-  const {data: participation, isLoading, error} = trpc.participation.get.useQuery(code as string, {enabled: !!code});
-  const {t} = useTranslation();
+const {data: participation, isLoading, error} = trpc.participation.get.useQuery({ code: code as string }, {enabled: !!code});  const {t} = useTranslation();
 
   const didNotFindParticipation = useMemo(() => {
     return error?.data?.code === 'NOT_FOUND' && !isLoading;
