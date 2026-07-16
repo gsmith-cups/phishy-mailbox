@@ -80,11 +80,11 @@ export const participationRouter = createTRPCRouter({
     });
   }),
   // get: publicProcedure.input(z.string()).query(async ({ctx, input}) => {
-  get: publicProcedure.input(z.object({ code: z.string(), rid: z.string().optional() })).query(async ({ctx, input}) =>{
-    const participation = await ctx.prisma.participation.findUnique({
-      where: {
-        code: input,
-      },
+  get: publicProcedure.input(z.object({ code: z.string(), rid: z.string().optional() })).query(async ({ctx, input}) => {
+  const participation = await ctx.prisma.participation.findUnique({
+    where: {
+      code: input.code,
+    },
       include: {
         study: {
           include: {
@@ -128,7 +128,7 @@ export const participationRouter = createTRPCRouter({
 
     return ctx.prisma.participation.findUnique({
       where: {
-        code: input,
+        code: input.code,
       },
       include: {
         study: {
