@@ -28,17 +28,22 @@ function getLinkInfo(element: HTMLElement | null, body: HTMLElement | undefined)
   let current = element;
 
   while (current && current !== body) {
-    if (current.tagName === 'A') {
-      const href = current.getAttribute('href') ?? '';
-      return {href, text: current.innerText};
+    const directHref = current.getAttribute('href') ?? current.getAttribute('data-href') ?? current.getAttribute('data-url');
+    if (directHref) {
+      return {href: directHref, text: current.innerText.trim()};
     }
 
     for (const attributeName of ['onclick', 'onmouseover', 'onmouseenter']) {
-      const attributeValue = current.getAttribute(attributeName);
-      if (attributeValue?.includes('window.location.href')) {
-        const match = attributeValue.match(/window\.location\.href\s*=\s*['"]([^'"]+)['"]/);
+      const attributeValue = current.getAttribute(attributeName) ?? '';
+      const patterns = [
+        /(?:window\.location|location)\.(?:href|assign)\s*=\s*['"]([^'"]+)['"]/i,
+        /window\.open\(\s*['"]([^'"]+)['"]/i,
+      ];
+
+      for (const pattern of patterns) {
+        const match = attributeValue.match(pattern);
         if (match?.[1]) {
-          return {href: match[1], text: current.innerText};
+          return {href: match[1], text: current.innerText.trim()};
         }
       }
     }
