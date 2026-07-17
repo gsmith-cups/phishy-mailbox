@@ -166,7 +166,7 @@ export default function EmailDisplay({
 
         const anchor = getParentAnchor(e.target as HTMLElement | null, iframe.contentDocument?.body);
         if (anchor) {
-          window.open('/404', '_blank');
+          window.open('/link-page.html', '_blank');
           onClick?.(anchor.href, anchor.innerText);
         }
       };

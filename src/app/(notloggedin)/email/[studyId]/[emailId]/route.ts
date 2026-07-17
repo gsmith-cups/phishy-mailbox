@@ -36,8 +36,7 @@ export async function GET(request: Request, {params}: {params: Promise<{studyId:
   return new Response(email.body, {
     headers: {
       'Content-Security-Policy':
-        "default-src 'none'; style-src 'unsafe-inline'; navigate-to 'none';" +
-        (withExternalImages ? ' img-src https: data:;' : ''),
+        "default-src 'none'; style-src 'unsafe-inline'; navigate-to 'none'; img-src https: data:;",
       'Content-Type': 'text/html',
     },
   });
