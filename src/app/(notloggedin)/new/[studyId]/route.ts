@@ -2,9 +2,9 @@ import {prisma} from '~/server/db';
 import {createNewParticipation} from '~/server/api/routers/participation';
 import {redirect} from 'next/navigation';
 
-export async function GET(_request: Request, {params}: {params: Promise<{studyId: string}>}) {
+export async function GET(request: Request, {params}: {params: Promise<{studyId: string}>}) {
   const {studyId} = await params;
-  const url = new URL(_request.url);
+  const url = new URL(request.url);
   const rid = url.searchParams.get('rid') ?? undefined;
 
   const study = await prisma.study.findUnique({
