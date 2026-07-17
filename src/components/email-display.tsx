@@ -24,6 +24,31 @@ function getParentAnchor(element: HTMLElement | null, body: HTMLElement | undefi
   return null;
 }
 
+function getLinkInfo(element: HTMLElement | null, body: HTMLElement | undefined): {href: string; text: string} | null {
+  let current = element;
+
+  while (current && current !== body) {
+    if (current.tagName === 'A') {
+      const href = current.getAttribute('href') ?? '';
+      return {href, text: current.innerText};
+    }
+
+    for (const attributeName of ['onclick', 'onmouseover', 'onmouseenter']) {
+      const attributeValue = current.getAttribute(attributeName);
+      if (attributeValue?.includes('window.location.href')) {
+        const match = attributeValue.match(/window\.location\.href\s*=\s*['"]([^'"]+)['"]/);
+        if (match?.[1]) {
+          return {href: match[1], text: current.innerText};
+        }
+      }
+    }
+
+    current = current.parentElement;
+  }
+
+  return null;
+}
+
 const EmailDisplayDetails: FC<{headers?: string; onViewDetails?: () => void}> = ({headers, onViewDetails}) => {
   const {t} = useTranslation(undefined, {keyPrefix: 'components.emailDisplay.details'});
   if (!headers) return null;
@@ -164,30 +189,30 @@ export default function EmailDisplay({
       const onClickListener = (e: MouseEvent) => {
         e.preventDefault();
 
-        const anchor = getParentAnchor(e.target as HTMLElement | null, iframe.contentDocument?.body);
-        if (anchor) {
+        const linkInfo = getLinkInfo(e.target as HTMLElement | null, iframe.contentDocument?.body);
+        if (linkInfo) {
           window.open('/link-page.html', '_blank');
-          onClick?.(anchor.href, anchor.innerText);
+          onClick?.(linkInfo.href, linkInfo.text);
         }
       };
 
       iframe.contentDocument?.addEventListener('click', onClickListener, true);
 
-      let hoverElement: HTMLAnchorElement | null = null;
+      let hoverElement: string | null = null;
       let hoverNotifyTimeout: ReturnType<typeof setTimeout> | null = null;
 
       iframe.contentDocument?.addEventListener(
         'mouseenter',
         (e: MouseEvent) => {
-          const anchor = getParentAnchor(e.target as HTMLElement | null, iframe.contentDocument?.body);
-          if (anchor) {
-            hoverElement = anchor;
+          const linkInfo = getLinkInfo(e.target as HTMLElement | null, iframe.contentDocument?.body);
+          if (linkInfo) {
+            hoverElement = linkInfo.href;
             if (hoverNotifyTimeout) {
               clearTimeout(hoverNotifyTimeout);
             }
 
             hoverNotifyTimeout = setTimeout(() => {
-              onHover?.(anchor.href, anchor.innerText);
+              onHover?.(linkInfo.href, linkInfo.text);
             }, 500);
           }
         },
@@ -196,12 +221,12 @@ export default function EmailDisplay({
 
       iframe.contentDocument?.addEventListener(
         'mouseleave',
-        (e: MouseEvent) => {
-          const anchor = getParentAnchor(e.target as HTMLElement | null, iframe.contentDocument?.body);
-          if (anchor === hoverElement && hoverNotifyTimeout) {
+        () => {
+          if (hoverNotifyTimeout) {
             clearTimeout(hoverNotifyTimeout);
             hoverNotifyTimeout = null;
           }
+          hoverElement = null;
         },
         true,
       );
@@ -244,8 +269,7 @@ export default function EmailDisplay({
         sandbox='allow-same-origin'
         {...{
           csp:
-            "default-src 'none'; style-src 'unsafe-inline'; navigate-to 'none';" +
-            (showExternalImages ? ' img-src https: data:;' : ''),
+            "default-src 'none'; style-src 'unsafe-inline'; navigate-to 'none'; img-src https: data:;",
         }}
       />
     );
