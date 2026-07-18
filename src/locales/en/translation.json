@@ -195,7 +195,7 @@
     "emailDisplay": {
       "noTitle": "No Title",
       "from": "From:",
-      "to": "To: You <postbox@example.com>",
+      "to": "To: You <bjones@mkitchen.com>",
       "noSender": "No Sender",
       "details": {
         "showDetails": "Show Details",
