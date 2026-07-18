@@ -437,7 +437,7 @@ export default function Run({params}: {params: Promise<{code: string}>}) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 5,
       },
     }),
   );
