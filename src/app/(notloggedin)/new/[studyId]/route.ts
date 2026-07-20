@@ -27,5 +27,5 @@ export async function GET(request: Request, {params}: {params: Promise<{studyId:
 
   // Pass rid through the redirect URL instead of saving here
   const destination = rid ? `/${code}?rid=${rid}` : `/${code}`;
-  redirect('/' + code);
+  redirect(destination);
 }
