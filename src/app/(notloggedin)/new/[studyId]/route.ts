@@ -23,7 +23,7 @@ export async function GET(request: Request, {params}: {params: Promise<{studyId:
     redirect('/');
   }
 
-  const {code} = await createNewParticipation(prisma, study.id, rid);
+  const {code} = await createNewParticipation(prisma, study.id);
 
   // Pass rid through the redirect URL instead of saving here
   const destination = rid ? `/${code}?rid=${rid}` : `/${code}`;
