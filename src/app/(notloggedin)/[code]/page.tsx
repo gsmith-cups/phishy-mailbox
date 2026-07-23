@@ -308,9 +308,9 @@ const IsFinishedOverlay: FC<{onClick: () => void; endText?: string | null; link?
               {t('clickToContinue')}
             </a>
           ) : (
-            <Link href='/' className='text-blue-600 hover:text-blue-500'>
-              {t('backToStart')}
-            </Link>
+            <a>
+              {t('Please enter in the completion code in Qualtrics')}
+            </a>
           )}
         </div>
       </div>
