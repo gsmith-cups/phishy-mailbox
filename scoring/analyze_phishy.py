@@ -105,9 +105,6 @@ for code in participants:
 result_df = pd.DataFrame(rows)
 
 # ── Write to Excel with formatting ────────────────────────────────────────────
-out_path = "/mnt/user-data/outputs/phishy_analysis.xlsx"
-os.makedirs(os.path.dirname(out_path), exist_ok=True)
-
 wb = openpyxl.Workbook()
 ws = wb.active
 ws.title = "Participant Summary"
@@ -177,6 +174,15 @@ for i, col in enumerate(cols[meta_cols:], start=meta_cols + 1):
 ws.row_dimensions[1].height = 60
 ws.row_dimensions[2].height = 40
 ws.freeze_panes = "F3"
+
+# Get output directory
+OUTPUT_DIR = csv_path 
+DESCRIPTION = 'results/CBDR_7-20'
+# Add run date to output filenames
+run_date = datetime.now().strftime('%Y-%m-%d')
+DESCRIPTION = f'{DESCRIPTION}__{run_date}'
+out_path = DESCRIPTION
+os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
 wb.save(out_path)
 print(f"✓ Saved to {out_path}")
