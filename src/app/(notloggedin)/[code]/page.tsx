@@ -309,7 +309,7 @@ const IsFinishedOverlay: FC<{onClick: () => void; endText?: string | null; link?
             </a>
           ) : (
             <div>
-              Please enter the completion code in Qualtrics
+               
             </div>
           )}
         </div>
