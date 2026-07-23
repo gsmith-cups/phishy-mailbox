@@ -308,9 +308,9 @@ const IsFinishedOverlay: FC<{onClick: () => void; endText?: string | null; link?
               {t('clickToContinue')}
             </a>
           ) : (
-            <a>
-              {t('Please enter in the completion code in Qualtrics')}
-            </a>
+            <div>
+              Please enter the completion code in Qualtrics
+            </div>
           )}
         </div>
       </div>
