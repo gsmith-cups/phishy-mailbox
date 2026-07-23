@@ -180,7 +180,7 @@ OUTPUT_DIR = csv_path
 DESCRIPTION = 'results/CBDR_7-20'
 # Add run date to output filenames
 run_date = datetime.now().strftime('%Y-%m-%d')
-DESCRIPTION = f'{DESCRIPTION}__{run_date}'
+DESCRIPTION = f'{DESCRIPTION}__{run_date}.xlsx'
 out_path = DESCRIPTION
 os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
