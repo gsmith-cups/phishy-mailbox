@@ -264,7 +264,7 @@ const RemainingTimer: FC<{
       {canFinish && (
         <button
           type='button'
-          className='mr-2 flex justify-center rounded-md bg-indigo-600 px-3 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 animate-highlight'
+          className='mr-2 flex justify-center rounded-md bg-white px-3 py-1 text-sm font-semibold text-black shadow-sm hover:bg-indigo-500 animate-highlight'
           onClick={finish}
         >
           {t('finish')}
