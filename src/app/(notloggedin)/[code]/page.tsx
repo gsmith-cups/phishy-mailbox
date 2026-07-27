@@ -289,7 +289,7 @@ const IsFinishedOverlay: FC<{onClick: () => void; endText?: string | null; link?
   return (
     <div className='z-60 fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75'>
       <div className='w-1/2 rounded-lg bg-white p-4'>
-        <div className='text-2xl font-bold'>{t('finishedTitle')}</div>
+        <div className='text-2xl font-bold'>You have completed the email task.</div>
         {endText && (
           <div
             dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(endText)}}
