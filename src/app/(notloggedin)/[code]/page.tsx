@@ -264,7 +264,7 @@ const RemainingTimer: FC<{
       {canFinish && (
         <button
           type='button'
-          className='mr-2 flex justify-center rounded-md bg-white px-6 py-1 text-sm font-semibold text-black shadow-sm hover:bg-[#FDFD96] animate-highlight'
+          className='mr-2 flex justify-center rounded-md bg-white px-7 py-1 text-sm font-semibold text-black shadow-sm hover:bg-[#FFEE8C] animate-highlight'
           onClick={finish}
         >
           {t('finish')}
@@ -287,7 +287,7 @@ const IsFinishedOverlay: FC<{onClick: () => void; endText?: string | null; link?
   const {t} = useTranslation(undefined, {keyPrefix: 'participants'});
 
   return (
-    <div className='z-60 fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75'>
+    <div className='z-50 fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75'>
       <div className='w-1/2 rounded-lg bg-white p-4'>
         <div className='text-2xl font-bold'>You have completed the email task.</div>
         {endText && (
@@ -323,7 +323,7 @@ const ConsentOverlay: FC<{onClick: () => void; text: string | null}> = ({onClick
   const [consent, setConsent] = useState<'yes' | 'no' | null>(null);
 
   return (
-    <div className='z-60 fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75'>
+    <div className='z-50 fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75'>
       <div className='w-1/2 rounded-lg bg-white p-4'>
         <div className='text-2xl font-bold'>{t('consent.title')}</div>
         {text && (
