@@ -40,8 +40,8 @@ Replace `export.csv` with the path to your exported CSV file from PhishyMailbox.
 |----------|-------------|---------|
 | `--after` | Only include participants who started **on or after** this date/time (Eastern time) | `--after "2026-07-18"` |
 | `--before` | Only include participants who started **before** this date/time (Eastern time) | `--before "2026-07-19"` |
-| `--conditions` | Path to a CSV file mapping RandID to condition group | `--conditions conditions.csv` |
-| `--output` | Path for the output Excel file (default: `phishy_analysis.xlsx`) | `--output "group1.xlsx"` |
+| `--conditions` | Path to a CSV mapping RandID to condition group. Enables the **By Condition** tab on spreadsheet. | `--conditions conditions.csv` |
+| `--output` | Path for the output Excel file (default: `phishy_analysis.xlsx` in current directory) | `--output "group1.xlsx"` |
 
 ---
 
@@ -69,93 +69,134 @@ python analyze_phishy.py export.csv --conditions conditions.csv
 
 **All options combined:**
 ```bash
-python analyze_phishy.py export.csv --after "2026-07-18" --before "2026-07-19" --conditions conditions.csv --output "july18_group1.xlsx"
+python analyze_phishy.py export.csv --after "2026-07-18" --before "2026-07-19" --conditions conditions.csv --output "july18.xlsx"
 ```
 
 ---
 
 ## Conditions CSV Format
 
-If you want to map participants to condition groups by RandID, create a CSV file with exactly two columns:
+To map participants to condition groups by RandID, create a CSV with exactly two columns:
 
 ```
 RandID,Condition
-123,Group A
-456,Group B
-789,Group A
+123,A
+456,B
+789,A
 ```
 
-The script works fine without this file — the Condition column will just be blank.
+The script works without this file — the Condition column will be blank and the By Condition tab will not be created.
 
 ---
 
 ## Email Types and Scoring
 
-Emails are identified by their first letter:
+Emails are identified by the first letter of their name:
 
-| Prefix | Type | Correct if... |
-|--------|------|---------------|
-| `P` | Phishing | Moved to Junk, Phishing, or Trash **AND** did not click any link |
-| `S` | Spam | Moved to Junk, Trash, or Phishing **AND** did not click any link |
-| `L` | Legitimate | Moved to any folder **except** Junk, Phishing, or Trash |
+| Prefix | Type | Scored? | Correct if... |
+|--------|------|---------|---------------|
+| `P` | Phishing | Yes | Did **not** click any link |
+| `S` | Spam | No | Not scored — link clicks flagged for review |
+| `L` | Legitimate | No | Not scored — clicks and replies tracked as informational |
 
 ---
 
 ## Output Spreadsheet
 
-### Summary columns (first columns, one per participant)
+The workbook contains up to 4 sheets depending on options used.
+
+---
+
+### Sheet 1: Participant Summary
+
+One row per participant. First 8 columns are summary info, followed by sub-columns for each email.
+
+**Summary columns:**
 
 | Column | Description |
 |--------|-------------|
 | Participant Code | PhishyMailbox participation code |
 | RandID | Qualtrics RandID passed via URL |
-| Condition | Condition group (if conditions CSV provided) |
+| Condition | Condition group (if `--conditions` provided, otherwise blank) |
 | Started At (ET) | When the participant started, in Eastern time |
-| Finished | Yes/No |
+| Finished | Yes / No |
 | Total Time (mins) | Time from start to finish |
-| Phish: Folder Correct | How many phishing emails moved to correct folder (e.g. 4/5) |
-| Phish: No Link Clicked | How many phishing emails had no link click (e.g. 3/5) |
-| Phish Score | Phishing emails fully correct — right folder AND no click |
-| Spam: Folder Correct | How many spam emails moved to correct folder |
-| Spam: No Link Clicked | How many spam emails had no link click |
-| Spam Score | Spam emails fully correct — right folder AND no click |
-| Legit: Correct Folder | How many legit emails not wrongly flagged as phishing |
-| Legit: Clicked Link | How many legit emails had a link clicked (informational) |
-| Legit: Replied | How many legit emails had a reply (informational) |
-| Legit Score | Legit emails correctly classified |
-| Overall Score | Total correct across all email types |
+| Phish Score | Fraction of phishing emails not clicked (e.g. 4/5) |
+| Legit Flagged as Phish | Count of legitimate emails the participant moved to the Phishing folder |
 
-### Per-email columns
+**Per-email sub-columns** (order is the same for all email types):
 
-For each email there are sub-columns showing:
+| Sub-column | Phish | Spam | Legit | Notes |
+|------------|-------|------|-------|-------|
+| Clicked Link | ✓ | ✓ | ✓ | Red for phish, orange for spam, yellow for legit |
+| Score | ✓ | — | — | Correct (green) = not clicked. Incorrect (red) = clicked |
+| Replied | ✓ | ✓ | ✓ | Yellow when Yes — informational only |
+| Folder | ✓ | ✓ | ✓ | Which folder the email was moved to |
+| Time Before First Click | ✓ | ✓ | ✓ | Time from first view to first link click |
+| Time Before Move | ✓ | ✓ | ✓ | Time from first view to moving to a folder |
 
-**Phishing and Spam emails:**
-- **Folder** — which folder it was moved to
-- **Folder Correct** — Yes/No (green/red)
-- **Clicked Link** — Yes/No (red for phish, orange for spam)
-- **Score** — Correct/Incorrect
-- **Time Before First Click** — time from first viewing to clicking a link
-- **Time Before Move** — time from first viewing to moving to a folder
+**Email group headers** are color-coded:
+- Red = Phishing
+- Dark orange = Spam
+- Green = Legitimate
 
-**Legitimate emails:**
-- **Folder** — which folder it was moved to
-- **Clicked Link** — Yes/No (yellow = informational)
-- **Replied** — Yes/No (yellow = informational)
-- **Score** — Correct/Incorrect
-- **Time Before First Click** — time from first viewing to clicking a link
-- **Time Before Move** — time from first viewing to moving to a folder
+Black borders separate each email group for easy visual scanning.
 
-### Color guide
+**Totals section** appears at row 26 (right below the last participant):
+- `# Clicked`, `# Not Clicked`, `% Clicked` — in the Clicked Link column for each email
+- `# in [Folder]` — in the Folder column for each email
+- `# Replied`, `# Not Replied`, `% Replied` — in the Replied column for each email
+
+---
+
+### Sheet 2: Summary
+
+Overall totals across all participants. One column per email, rows are metrics.
+
+| Column A | Column B | Columns C+ |
+|----------|----------|------------|
+| Category | Metric | One column per email |
+
+**Categories and metrics:**
+
+| Category | Metrics |
+|----------|---------|
+| Clicked | # Clicked, # Not Clicked, % Clicked |
+| Folders | # in Done, # in Junk, # in Phishing, # in Replied, # in Trash (shown as `count (%)`) |
+| Replies | # Replied, # Not Replied, % Replied |
+
+Thick horizontal lines separate the three categories. Phishing email columns are red, spam are dark orange, legit are green.
+
+---
+
+### Sheet 3: By Condition *(only with --conditions)*
+
+Same metrics as the Summary tab, but broken out by condition group. Each email has one column per condition (e.g. L2 Cond A, L2 Cond B, L2 Cond C, then L4 Cond A, L4 Cond B, L4 Cond C, etc.).
+
+An **Avg Phish Score** row at the bottom shows the average fraction of phishing emails not clicked, by condition. This is calculated across all phishing emails for participants in each condition group.
+
+---
+
+### Sheet 4: Legend
+
+Full explanation of all colors, scoring rules, and command line options.
+
+---
+
+## Color Guide
 
 | Color | Meaning |
 |-------|---------|
 | Red email header | Phishing email |
 | Dark orange email header | Spam email |
 | Green email header | Legitimate email |
-| Green cell | Correct |
-| Red cell | Incorrect |
-| Light orange | Spam link click — flag for review (possible unsubscribe) |
-| Yellow | Legit link click or reply — informational only |
+| Green Score cell | Correct — did not click |
+| Red Score cell | Incorrect — clicked |
+| Red Clicked Link | Clicked a phishing link |
+| Light orange Clicked Link | Clicked a spam link — review for unsubscribe |
+| Yellow Clicked Link | Clicked a legit link — informational |
+| Yellow Replied | Replied to an email — informational |
+| Red Legit Flagged as Phish | Participant moved a legit email to the Phishing folder |
 
 ---
 
