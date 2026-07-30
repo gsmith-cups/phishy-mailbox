@@ -71,6 +71,12 @@ if filter_after or filter_before:
     df = df[df["Code"].isin(valid)]
     print(f"  Date filter applied — {len(valid)} participants match.")
 
+# ── Drop incomplete participants ───────────────────────────────────────────────
+finished = df[df["Type"] == "finished"]
+valid_codes = set(finished["Code"].unique())
+df = df[df["Code"].isin(valid_codes)]
+print(f"  Removed incomplete participants — {len(valid_codes)} participants completed.")
+
 def is_phish(e): return str(e).startswith("P")
 def is_legit(e): return str(e).startswith("L")
 def is_spam(e):  return str(e).startswith("S")
