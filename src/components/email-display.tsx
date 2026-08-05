@@ -183,6 +183,18 @@ export default function EmailDisplay({
     (loadEvent: SyntheticEvent<HTMLIFrameElement>) => {
       const iframe = loadEvent.target as HTMLIFrameElement;
 
+      if (iframe.contentDocument) {
+        const links = iframe.contentDocument.querySelectorAll('a[href]');
+        links.forEach((link) => {
+          const href = link.getAttribute('href');
+          if (href) {
+            link.setAttribute('data-href', href);
+            link.removeAttribute('href');
+            (link as HTMLElement).style.cursor = 'pointer';
+          }
+        });
+      }
+
       const debouncedScroll = debounce(() => {
         if (iframe.contentWindow && iframe.contentDocument) {
           const rawPercentage =
@@ -196,10 +208,9 @@ export default function EmailDisplay({
       iframe.contentWindow?.addEventListener('scroll', debouncedScroll, {passive: true});
 
       const onClickListener = (e: MouseEvent) => {
-        e.preventDefault();
-
         const linkInfo = getLinkInfo(e.target as HTMLElement | null, iframe.contentDocument?.body);
         if (linkInfo) {
+          e.preventDefault();
           e.stopImmediatePropagation();
           window.open('/link-page.html', '_blank');
           onClick?.(linkInfo.href, linkInfo.text);
