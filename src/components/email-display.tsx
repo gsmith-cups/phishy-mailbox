@@ -259,7 +259,7 @@ export default function EmailDisplay({
           src={'/email/' + studyId + '/' + email.id + (showExternalImages ? '?showExternalImages=true' : '')}
           className='h-72 flex-grow'
           onLoad={didLoad}
-          sandbox='allow-same-origin'
+          sandbox='allow-same-origin allow-scripts'
           {...{csp: "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'self' https://email-task-research.vercel.app; img-src https: data:;"}}
         />
       );
@@ -275,7 +275,7 @@ export default function EmailDisplay({
         srcDoc={email.body}
         className='h-72 flex-grow'
         onLoad={didLoad}
-        sandbox='allow-same-origin'
+        sandbox='allow-same-origin allow-scripts'
         {...{
           csp:
             "default-src 'none'; style-src 'unsafe-inline'; navigate-to 'none'; img-src https: data:;",
