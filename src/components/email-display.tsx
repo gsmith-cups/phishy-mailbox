@@ -260,7 +260,7 @@ export default function EmailDisplay({
           className='h-72 flex-grow'
           onLoad={didLoad}
           sandbox='allow-same-origin'
-          {...{csp: "default-src 'none'; style-src 'unsafe-inline'; navigate-to 'none'; img-src https: data:;"}}
+          {...{csp: "default-src 'none'; style-src 'unsafe-inline'; img-src https: data:;"}}
         />
       );
     }
