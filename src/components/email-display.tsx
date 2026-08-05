@@ -200,6 +200,7 @@ export default function EmailDisplay({
 
         const linkInfo = getLinkInfo(e.target as HTMLElement | null, iframe.contentDocument?.body);
         if (linkInfo) {
+          e.stopPropagation();
           window.open('/link-page.html', '_blank');
           onClick?.(linkInfo.href, linkInfo.text);
         }
