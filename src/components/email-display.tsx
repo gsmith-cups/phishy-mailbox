@@ -224,6 +224,7 @@ export default function EmailDisplay({
 
             hoverNotifyTimeout = setTimeout(() => {
               onHover?.(linkInfo.href, linkInfo.text);
+              hoverNotifyTimeout = null;
             }, 500);
           }
         },
