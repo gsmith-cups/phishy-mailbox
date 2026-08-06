@@ -43,6 +43,13 @@ export const eMailLinkHoverEvent = z.object({
 });
 export type EMailLinkHoverEvent = z.infer<typeof eMailLinkHoverEvent>;
 
+export const eMailLinkHoverExitEvent = z.object({
+  type: z.literal('email-link-hover-exit'),
+  url: z.string().url(),
+  linkText: z.string(),
+});
+export type EMailLinkHoverExitEvent = z.infer<typeof eMailLinkHoverExitEvent>;
+
 export const eMailOpenReplyEvent = z.object({
   type: z.literal('email-open-reply'),
 });
@@ -67,6 +74,7 @@ export const participationEvents = z.union([
   eMailScrolledEvent,
   eMailLinkClickEvent,
   eMailLinkHoverEvent,
+  eMailLinkHoverExitEvent,
   eMailOpenReplyEvent,
   eMailSendReplyEvent,
   eMailAbortReplyEvent,

@@ -21,6 +21,7 @@ import Link from 'next/link';
 import {
   EMailLinkClickEvent,
   EMailLinkHoverEvent,
+  EMailLinkHoverExitEvent,
   EMailScrolledEvent,
   EMailViewEvent,
   EMailViewExternalImagesEvent,
@@ -647,6 +648,17 @@ export default function Run({params}: {params: Promise<{code: string}>}) {
                         url: href,
                         linkText: text,
                       } as EMailLinkHoverEvent,
+                    });
+                  }}
+                  onHoverExit={(href, text) => {
+                    trackEventMutation.mutate({
+                      participationId: data.id,
+                      participationEmailId: currentEmail.id,
+                      event: {
+                        type: 'email-link-hover-exit',
+                        url: href,
+                        linkText: text,
+                      } as EMailLinkHoverExitEvent,
                     });
                   }}
                   onViewDetails={() => {

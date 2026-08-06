@@ -337,9 +337,9 @@ export const studyRouter = createTRPCRouter({
             'From Folder': eventData.type === 'email-moved' ? folderMap.get(eventData.fromFolderId)?.name : null,
             'To Folder': eventData.type === 'email-moved' ? folderMap.get(eventData.toFolderId)?.name : null,
             'Scrolled To': eventData.type === 'email-scrolled' ? eventData.scrollPosition : null,
-            URL: eventData.type === 'email-link-click' || eventData.type === 'email-link-hover' ? eventData.url : null,
+            URL: eventData.type === 'email-link-click' || eventData.type === 'email-link-hover' || eventData.type === 'email-link-hover-exit' ? eventData.url : null,
             'Link Text':
-              eventData.type === 'email-link-click' || eventData.type === 'email-link-hover'
+              eventData.type === 'email-link-click' || eventData.type === 'email-link-hover' || eventData.type === 'email-link-hover-exit'
                 ? eventData.linkText
                 : null,
             'Reply Message': eventData.type === 'email-send-reply' ? eventData.message : null,

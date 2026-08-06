@@ -159,6 +159,7 @@ export default function EmailDisplay({
   onScroll,
   onClick,
   onHover,
+  onHoverExit,
   onViewDetails,
   onOpenReply,
   onSendReply,
@@ -172,6 +173,7 @@ export default function EmailDisplay({
   onScroll?: (scroll: number) => void;
   onClick?: (href: string, text: string) => void;
   onHover?: (href: string, text: string) => void;
+  onHoverExit?: (href: string, text: string) => void;
   onViewDetails?: () => void;
   onOpenReply?: () => void;
   onSendReply?: (message: string) => void;
@@ -207,7 +209,7 @@ export default function EmailDisplay({
 
       iframe.contentDocument?.addEventListener('click', onClickListener, true);
 
-      let hoverElement: string | null = null;
+      let hoverElement: {href: string; text: string} | null = null;
       let hoverNotifyTimeout: ReturnType<typeof setTimeout> | null = null;
 
       iframe.contentDocument?.addEventListener(
@@ -215,7 +217,7 @@ export default function EmailDisplay({
         (e: MouseEvent) => {
           const linkInfo = getLinkInfo(e.target as HTMLElement | null, iframe.contentDocument?.body);
           if (linkInfo) {
-            hoverElement = linkInfo.href;
+            hoverElement = linkInfo;
             if (hoverNotifyTimeout) {
               clearTimeout(hoverNotifyTimeout);
             }
@@ -231,9 +233,13 @@ export default function EmailDisplay({
       iframe.contentDocument?.addEventListener(
         'mouseleave',
         () => {
+          const wasHovered = !!hoverNotifyTimeout === false && hoverElement !== null;
           if (hoverNotifyTimeout) {
             clearTimeout(hoverNotifyTimeout);
             hoverNotifyTimeout = null;
+          }
+          if (wasHovered && hoverElement) {
+            onHoverExit?.(hoverElement.href, hoverElement.text);
           }
           hoverElement = null;
         },
@@ -247,7 +253,7 @@ export default function EmailDisplay({
         });
       }
     },
-    [onClick, onHover, onScroll],
+    [onClick, onHover, onHoverExit, onScroll],
   );
 
   const [showExternalImages, setShowExternalImages] = useState(studyExternalImageMode === ExternalImageMode.SHOW);
